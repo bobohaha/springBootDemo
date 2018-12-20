@@ -1,15 +1,15 @@
-package com.Tester.tester;
+package com.Tester.tester.pojo;
 
 import java.util.Date;
 
-public class TvServiceDto {
+public class TvService {
 
     private int id;
     private String name;
 
-    public TvServiceDto(){}
+    public TvService(){}
 
-    public TvServiceDto(int id, String name, int playNumber, Date time){
+    public TvService(int id, String name, int playNumber, Date time){
         this.id=id;
         this.name=name;
         this.playNumber=playNumber;

@@ -1,12 +1,14 @@
-package com.Tester.tester;
+package com.Tester.tester.Controller;
 
+import com.Tester.tester.pojo.TvService;
+import com.Tester.tester.service.TvServiceService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.apache.commons.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
@@ -21,69 +23,73 @@ public class TvServiceController {
 
     private static final Log log = LogFactory.getLog(TvServiceController.class);
 
+    @Autowired TvServiceService tvServiceService;
+
     @GetMapping
-    public List<TvServiceDto> getAll() {
+    public List<TvService> getPlayerList() {
 
         if (log.isTraceEnabled()) {
             log.trace("getAll()");
         }
-        Calendar calendar = Calendar.getInstance();
-        List<TvServiceDto> list = new ArrayList<>();
-        calendar.set(2018, Calendar.UNDECIMBER, 12);
-        list.add(new TvServiceDto(001, "郭德纲", 12, calendar.getTime()));
-        calendar.set(2018, Calendar.UNDECIMBER, 12);
-        list.add(new TvServiceDto(002, "于谦", 12, calendar.getTime()));
-        calendar.set(2018, Calendar.UNDECIMBER, 12);
-        list.add(new TvServiceDto(003, "李大猫", 12, calendar.getTime()));
+//        Calendar calendar = Calendar.getInstance();
+//        List<TvService> list = new ArrayList<>();
+//        calendar.set(2018, Calendar.UNDECIMBER, 12);
+//        list.add(new TvService(001, "郭德纲", 12, calendar.getTime()));
+//        calendar.set(2018, Calendar.UNDECIMBER, 12);
+//        list.add(new TvService(002, "于谦", 12, calendar.getTime()));
+//        calendar.set(2018, Calendar.UNDECIMBER, 12);
+//        list.add(new TvService(003, "李大猫", 12, calendar.getTime()));
+
+        List<TvService> list = tvServiceService.getPlayerListService();
 
         return list;
     }
 
     //select
     @GetMapping("/{id}")
-    public TvServiceDto getDetail(@PathVariable int id){
+    public TvService getDetail(@PathVariable int id) {
         if (log.isTraceEnabled()) {
             log.trace("getDetail");
         }
 
-        if(id == 001){
+        if (id == 001) {
             return CreateVidio1();
-        }else if (id == 002) {
+        } else if (id == 002) {
             return CreateVidio2();
-        }else {
+        } else {
             log.error("not fond page");
         }
         return null;
     }
 
-    private TvServiceDto CreateVidio1(){
+    private TvService CreateVidio1() {
         Calendar c = Calendar.getInstance();
         c.set(2018, Calendar.UNDECIMBER, 12);
-        return new TvServiceDto(001, "郭德纲", 12, c.getTime());
+        return new TvService(001, "郭德纲", 12, c.getTime());
     }
 
-    private TvServiceDto CreateVidio2(){
+    private TvService CreateVidio2() {
         Calendar c = Calendar.getInstance();
         c.set(2018, Calendar.UNDECIMBER, 12);
-        return new TvServiceDto(002, "于谦", 12, c.getTime());
+        return new TvService(002, "于谦", 12, c.getTime());
     }
 
     //insert
     @PostMapping
-    private TvServiceDto insertVidio(@RequestBody TvServiceDto tvServiceDto) {
+    private TvService insertVidio(@RequestBody TvService tvService) {
 
-        tvServiceDto.setId(003);
-        tvServiceDto.setName("大帝");
-        return tvServiceDto;
+        tvService.setId(003);
+        tvService.setName("大帝");
+        return tvService;
     }
 
     //modify
     @PutMapping("/{id}")
-    private TvServiceDto modify(@PathVariable int id, @RequestBody TvServiceDto tvServiceDto){
+    private TvService modify(@PathVariable int id, @RequestBody TvService tvService) {
 
         if (id == 001 || id == 002) {
             return CreateVidio1();
-        }else {
+        } else {
             log.error("not fond page");
         }
         return null;
@@ -96,7 +102,7 @@ public class TvServiceController {
         Map<String, String> result = new HashMap();
         if (id == 001) {
             result.put("message", "001" + request.getRemoteAddr() + "删除原因" + deletteReason + ")");
-        }else {
+        } else {
             log.error("not fond page");
         }
 
@@ -106,7 +112,7 @@ public class TvServiceController {
     //upload file
     @PostMapping(value = "/{id}/photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     //consumes = MediaType.MULTIPART_FORM_DATA_VALUE 输入格式
-    private void uploadPhoto (@PathVariable int id, @RequestParam("photo") MultipartFile multipartFile) throws IOException {
+    private void uploadPhoto(@PathVariable int id, @RequestParam("photo") MultipartFile multipartFile) throws IOException {
 
         FileOutputStream fos = new FileOutputStream("target/" + multipartFile.getOriginalFilename());
         IOUtils.copy(multipartFile.getInputStream(), fos);
